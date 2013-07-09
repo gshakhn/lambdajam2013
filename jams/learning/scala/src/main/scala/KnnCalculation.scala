@@ -21,7 +21,24 @@ object KnnCalculation {
     val sampleDistances = sampleData.par.map {
       euclideanDistance(entry, _)
     }
-    sampleNumbers.zip(sampleDistances).toList.sortBy{case (number, distance) => distance}.take(k).map {case (number, _) => number}
+    val zipped: List[(Int, Double)] = sampleNumbers.zip(sampleDistances).toList
+    top(k, zipped).map {case (number, _) => number}
+  }
+
+  def top (n: Int, li: List [(Int, Double)]) : List[(Int, Double)] = {
+
+    def updateSofar (sofar: List [(Int, Double)], el: (Int, Double)) : List [(Int, Double)] = {
+      // println (el + " - " + sofar)
+      if (el._2 < sofar.head._2)
+        (el :: sofar.tail).sortWith (_._2 > _._2)
+      else sofar
+    }
+
+    /* better readable:
+      val sofar = li.take (n).sortWith (_ > _)
+      val rest = li.drop (n)
+      (sofar /: rest) (updateSofar (_, _)) */
+    (li.take (n). sortWith (_._2 > _._2) /: li.drop (n)) (updateSofar (_, _))
   }
 
   private def commonestNeighbor(neighbors: Seq[Int]) : Int = {
