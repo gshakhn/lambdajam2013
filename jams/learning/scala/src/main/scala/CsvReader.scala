@@ -5,7 +5,7 @@ class CsvReader {
     scala.io.Source.fromFile(filename).getLines().drop(1).map {
       line => {
         val values = line.split(",").map(
-          v => v.toInt
+          v => v.toDouble
         )
         Entry(values.head, values.tail)
       }

@@ -1,11 +1,4 @@
-/**
- * Created with IntelliJ IDEA.
- * User: gshakhnazaryan
- * Date: 7/9/13
- * Time: 1:29 PM
- * To change this template use File | Settings | File Templates.
- */
-
+import java.util.UUID
 import scala.math._
 
 object KnnCalculation {
@@ -14,7 +7,7 @@ object KnnCalculation {
     a.par.map { case (f, l) => pow(f - l, 2) }.sum
   }
 
-  private def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Int] = {
+  private def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Double] = {
     val sampleNumbers = sampleData.par.map {
       _.number
     }
@@ -24,15 +17,23 @@ object KnnCalculation {
     sampleNumbers.zip(sampleDistances).toList.sortBy{case (number, distance) => distance}.take(k).map {case (number, _) => number}
   }
 
-  private def commonestNeighbor(neighbors: Seq[Int]) : Int = {
+  private def commonestNeighbor(neighbors: Seq[Double]) : Double = {
     neighbors.groupBy{n => n}.toList.map{ case (n, nList) => (n, nList.size)}.maxBy{case(n, occurrences) => occurrences}._1
   }
 
-  def nearestNeighbor(entry: Entry, sampleData: Seq[Entry]) : Int = {
-    val result = commonestNeighbor(nearestNeighbors(entry, sampleData, 5))
-    println("processing " + entry.number + " and we got " + (result == entry.number))
+  def nearestNeighbor(entry: Entry, sampleData: Seq[Entry]) : Double = {
+    val result = commonestNeighbor(nearestNeighbors(entry, sampleData, 1))
+    val success: Boolean = result == entry.number
+    if(!success) {
+      println("processing " + entry.number + " and we got " + result + " "
+        + entry.number + " " + success)
+      println("actual: " + euclideanDistance(entry, sampleData.find(_.number == entry.number).get))
+      println("predicted: " + euclideanDistance(entry, sampleData.find(_.number == result).get))
+      ImageHelper.writeImage(entry, UUID.randomUUID().toString.substring(0,5)
+        + "fail - " + result)
+    }
     result
   }
 }
 
-case class Entry(number: Int, pixels: Seq[Int])
+case class Entry(number: Double, pixels: Seq[Double])
