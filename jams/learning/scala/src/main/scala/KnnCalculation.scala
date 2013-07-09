@@ -13,6 +13,20 @@ object KnnCalculation {
     val a = x.pixels.zip(y.pixels)
     a.map { case (f, l) => pow(f - l, 2) }.sum
   }
+
+  def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Int] = {
+    val sampleNumbers: Seq[Int] = sampleData.map {
+      _.number
+    }
+    val sampleDistances: Seq[Double] = sampleData.map {
+      euclideanDistance(entry, _)
+    }
+    sampleNumbers.zip(sampleDistances).sortBy{_._2}.take(k).map {_._1}
+  }
+
+  def commonestNeighbor(neighbors: Seq[Int]) : Int = {
+    neighbors.groupBy{n => n}.toList.map{ case (n, nList) => (n, nList.size)}.maxBy{case(n, occurrences) => occurrences}._1
+  }
 }
 
 case class Entry(number: Int, pixels: Seq[Int])
