@@ -21,7 +21,7 @@ object KnnCalculation {
     val sampleDistances: Seq[Double] = sampleData.map {
       euclideanDistance(entry, _)
     }
-    sampleNumbers.zip(sampleDistances).sortBy{_._2}.take(k).map {_._1}
+    sampleNumbers.zip(sampleDistances).sortBy{case (number, distance) => distance}.take(k).map {case (number, _) => number}
   }
 
   def commonestNeighbor(neighbors: Seq[Int]) : Int = {
