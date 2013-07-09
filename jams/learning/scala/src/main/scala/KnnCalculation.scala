@@ -28,7 +28,10 @@ object KnnCalculation {
     neighbors.groupBy{n => n}.toList.map{ case (n, nList) => (n, nList.size)}.maxBy{case(n, occurrences) => occurrences}._1
   }
 
-  def nearestNeighbor(entry: Entry, sampleData: Seq[Entry]) : Int = commonestNeighbor(nearestNeighbors(entry, sampleData, 5))
+  def nearestNeighbor(entry: Entry, sampleData: Seq[Entry]) : Int = {
+    println("processing " + entry.number)
+    commonestNeighbor(nearestNeighbors(entry, sampleData, 5))
+  }
 }
 
 case class Entry(number: Int, pixels: Seq[Int])
