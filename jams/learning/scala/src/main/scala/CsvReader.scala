@@ -1,8 +1,4 @@
-package main.parsing
-
 import collection.JavaConversions._
-
-case class Entry(pixels: Seq[Int], label: Int)
 
 class CsvReader {
   def readFile(filename: String): Seq[Entry] = {
@@ -11,9 +7,8 @@ class CsvReader {
         val values = line.split(",").map(
           v => v.toInt
         )
-        Entry(values.tail, values.head)
+        Entry(values.head, values.tail)
       }
     }.toSeq
   }
-
 }

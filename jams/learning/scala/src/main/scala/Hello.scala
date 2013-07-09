@@ -1,8 +1,8 @@
-import main.parsing.CsvReader
 
 object Main {
   def main(args: Array[String]) = {
     println("Hi!")
-    val entries = new CsvReader().readFile("../digitssample.csv")
+    val training = new CsvReader().readFile("../digitssample.csv")
+    val testing = new CsvReader().readFile("../digitscheck.csv")
   }
 }
