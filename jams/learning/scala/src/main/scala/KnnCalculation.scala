@@ -29,7 +29,7 @@ object KnnCalculation {
     (li.take(n).sortWith(_._2 > _._2) /: li.drop(n)) (updateSofar(_, _))
   }
 
-  private def commonestNeighbor(neighbors: Seq[Int]) : Int = {
+  private def commonestNeighbor(neighbors: Seq[Double]) : Double = {
     neighbors.groupBy{n => n}.toList.map{ case (n, nList) => (n, nList.size)}.maxBy{case(n, occurrences) => occurrences}._1
   }
 

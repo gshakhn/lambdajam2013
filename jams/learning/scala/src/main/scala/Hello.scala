@@ -14,9 +14,9 @@ object Main {
     )
     //println("Processed: " + processedTraining)
 
-    val correct = testing.map(
+    val correct = testing.par.map(
       e => {
-        val candidates = KnnCalculation.nearestNeighbors(e, processedTraining, 5)
+        val candidates = KnnCalculation.nearestNeighbors(e, processedTraining, 3)
         KnnCalculation.nearestNeighbor(e, training.filter(
           e => candidates.contains(e.number)
         )) == e.number
