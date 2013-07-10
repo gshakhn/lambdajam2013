@@ -98,7 +98,6 @@ object MazeGenerator {
     (westHalf, eastHalf)
   }
 
-
   def drawHorizontalWall(row: List[Int], opening: Int, size: Int): List[Int] = {
     row.zipWithIndex.map {
       case (n, columnIndex) => {
