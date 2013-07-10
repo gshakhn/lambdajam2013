@@ -7,7 +7,7 @@ object KnnCalculation {
     a.par.map { case (f, l) => pow(f - l, 2) }.sum
   }
 
-  private def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Double] = {
+  def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Double] = {
     val sampleNumbers = sampleData.par.map {
       _.number
     }
@@ -27,8 +27,6 @@ object KnnCalculation {
     if(!success) {
       println("processing " + entry.number + " and we got " + result + " "
         + entry.number + " " + success)
-      println("actual: " + euclideanDistance(entry, sampleData.find(_.number == entry.number).get))
-      println("predicted: " + euclideanDistance(entry, sampleData.find(_.number == result).get))
       ImageHelper.writeImage(entry, UUID.randomUUID().toString.substring(0,5)
         + "fail - " + result)
     }

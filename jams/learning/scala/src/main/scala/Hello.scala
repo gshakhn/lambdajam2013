@@ -12,11 +12,16 @@ object Main {
     processedTraining.foreach(
       e => ImageHelper.writeImage(e, "processed")
     )
-    println("Processed: " + processedTraining)
+    //println("Processed: " + processedTraining)
 
     val correct = testing.map(
-      e => KnnCalculation.nearestNeighbor(e, processedTraining) == e.number
-    ).toList.count(
+      e => {
+        val candidates = KnnCalculation.nearestNeighbors(e, processedTraining, 5)
+        KnnCalculation.nearestNeighbor(e, training.filter(
+          e => candidates.contains(e.number)
+        )) == e.number
+        }
+      ).toList.count(
       e => e == true
     )
     println(correct + " Correctly classified instances")
