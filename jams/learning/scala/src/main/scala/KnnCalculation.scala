@@ -1,10 +1,11 @@
 import java.util.UUID
 import scala.math._
+import Ordering.Implicits._
 
 object KnnCalculation {
   private def euclideanDistance(x: Entry, y: Entry) = {
     val a = x.pixels.zip(y.pixels)
-    a.par.map { case (f, l) => pow(f - l, 2) }.sum
+    a.par.map { case (f, l) => (f - l) * (f - l) }.sum
   }
 
   def nearestNeighbors(entry: Entry, sampleData: Seq[Entry], k: Int) : Seq[Double] = {
@@ -14,10 +15,21 @@ object KnnCalculation {
     val sampleDistances = sampleData.par.map {
       euclideanDistance(entry, _)
     }
-    sampleNumbers.zip(sampleDistances).toList.sortBy{case (number, distance) => distance}.take(k).map {case (number, _) => number}
+    val zipped = sampleNumbers.zip(sampleDistances).toList
+    top(k, zipped).map {case (number, _) => number}
   }
 
-  private def commonestNeighbor(neighbors: Seq[Double]) : Double = {
+  def top [E, F : Ordering] (n: Int, li: List [(E, F)]) : List[(E, F)] = {
+    def updateSofar (sofar: List [(E, F)], el: (E, F)) : List [(E, F)] = {
+      if (el._2 < sofar.head._2)
+        (el :: sofar.tail).sortWith(_._2 > _._2)
+      else sofar
+    }
+
+    (li.take(n).sortWith(_._2 > _._2) /: li.drop(n)) (updateSofar(_, _))
+  }
+
+  private def commonestNeighbor(neighbors: Seq[Int]) : Int = {
     neighbors.groupBy{n => n}.toList.map{ case (n, nList) => (n, nList.size)}.maxBy{case(n, occurrences) => occurrences}._1
   }
 
